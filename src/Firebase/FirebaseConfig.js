@@ -1,4 +1,3 @@
-import { SET_LOADING, GET_USER } from "../Reducers/userReducer";
 import { initializeApp } from "firebase/app";
 import {
 getAuth, 
@@ -8,11 +7,7 @@ signOut,
 GoogleAuthProvider,
 signInWithPopup
 } from "firebase/auth";
-import { useContext } from "react";
-import { UserContext } from "../Context/UserContext";
 
-//Global Variables
-export let user;
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -35,25 +30,21 @@ export function createAnAccount(email, password, rePassword) {
         return;
     } 
 
-    const { loading, dispatch } = useContext(UserContext);
-
-    dispatch({ type: SET_LOADING });
     createUserWithEmailAndPassword(auth, email, password).then((res) => {
         user = res.user;
-        dispatch({ type: GET_USER, payload: user })
     }).catch((err) => {
-        throw ('Error Code: ', err.code, 'Error Msg: ', err.message);
+        console.log('Error Code: ', err.code);
+        console.log('Error Msg: ', err.message);
     })
 
-    if (loading) return (<h4>LOADINGING.........</h4>)
-    return (<></>)
 }
 //Sign In
 export function signInWithEmail(email, password) {
     signInWithEmailAndPassword(auth, email, password).then(res => {
         user = res.user;
     }).catch(err => {
-        throw ('Error Code: ', err.code, 'Error Msg: ', err.message);
+        console.log('Error Code: ', err.code);
+        console.log('Error Msg: ', err.message);
     })
 }
 //now With Google
@@ -61,7 +52,7 @@ export function signInWithGoogle() {
     signInWithPopup(auth, new GoogleAuthProvider()).then((res) => {
         console.log(res);
     }).catch(err => {
-        throw('Code: ', err.code, 'Msg: ', err.message);
+        console.log('Code: ', err.code, 'Msg: ', err.message);
     });
 }
 
