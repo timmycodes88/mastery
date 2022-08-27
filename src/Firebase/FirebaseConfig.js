@@ -31,7 +31,6 @@ export function createAnAccount(email, password, rePassword) {
     } 
 
     createUserWithEmailAndPassword(auth, email, password).then((res) => {
-        user = res.user;
     }).catch((err) => {
         console.log('Error Code: ', err.code);
         console.log('Error Msg: ', err.message);
@@ -41,7 +40,6 @@ export function createAnAccount(email, password, rePassword) {
 //Sign In
 export function signInWithEmail(email, password) {
     signInWithEmailAndPassword(auth, email, password).then(res => {
-        user = res.user;
     }).catch(err => {
         console.log('Error Code: ', err.code);
         console.log('Error Msg: ', err.message);

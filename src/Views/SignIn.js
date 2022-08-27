@@ -1,9 +1,6 @@
 import tw from 'twin.macro';
 import { useState } from 'react';
-<<<<<<< HEAD:src/Views/SignIn.js
 import { createAnAccount, signInWithEmail, signInWithGoogle } from '../Firebase/FirebaseConfig'
-=======
->>>>>>> parent of bd16814 (Sign in Setup!):src/SignIn.js
 
 export default function SignIn() {
 
@@ -24,8 +21,8 @@ export default function SignIn() {
                     <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder='Enter your Password' />
                     {isSignIn ? null : <Input value={rePassword} onChange={(e) => setRePassword(e.target.value)} type="password" placeholder='Re-enter your Password' />}
                     <ButtonWrapper>
-                        <SignInButton>{isSignIn ? 'Sign In' : 'Create an Account'}</SignInButton>
-                        <SignInWithGoogle>Sign In w Google</SignInWithGoogle>
+                        <SignInButton onClick={isSignIn ? signInWithEmail : createAnAccount}>{isSignIn ? 'Sign In' : 'Create an Account'}</SignInButton>
+                        <SignInWithGoogle onClick={signInWithGoogle}>Sign In w Google</SignInWithGoogle>
                     </ButtonWrapper>
                 </FormWrapper>
                 <SwitchToCreateButton onClick={() => setIsSignIn((oldState) => !oldState)}>
