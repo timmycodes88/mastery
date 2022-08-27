@@ -1,5 +1,5 @@
 import tw from 'twin.macro';
-import { mySignOut } from "./Firebase/FirebaseConfig";
+import { mySignOut } from "../Firebase/FirebaseConfig";
 
 export default function MainApp() {
     return(

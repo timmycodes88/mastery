@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 import { useState } from 'react';
-import { createAnAccount, signInWithEmail, signInWithGoogle } from './Firebase/FirebaseConfig'
+import { createAnAccount, signInWithEmail, signInWithGoogle } from '../Firebase/FirebaseConfig'
 
 export default function SignIn() {
 
