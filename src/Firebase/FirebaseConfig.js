@@ -1,3 +1,4 @@
+import { SET_LOADING, GET_USER } from "../Reducers/userReducer";
 import { initializeApp } from "firebase/app";
 import {
 getAuth, 
@@ -7,6 +8,8 @@ signOut,
 GoogleAuthProvider,
 signInWithPopup
 } from "firebase/auth";
+import { useContext } from "react";
+import { UserContext } from "../Context/UserContext";
 
 //Global Variables
 export let user;
@@ -32,12 +35,18 @@ export function createAnAccount(email, password, rePassword) {
         return;
     } 
 
+    const { loading, dispatch } = useContext(UserContext);
+
+    dispatch({ type: SET_LOADING });
     createUserWithEmailAndPassword(auth, email, password).then((res) => {
         user = res.user;
+        dispatch({ type: GET_USER, payload: user })
     }).catch((err) => {
         throw ('Error Code: ', err.code, 'Error Msg: ', err.message);
     })
 
+    if (loading) return (<h4>LOADINGING.........</h4>)
+    return (<></>)
 }
 //Sign In
 export function signInWithEmail(email, password) {

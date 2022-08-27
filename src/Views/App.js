@@ -1,5 +1,5 @@
 import SignIn from "./SignIn";
-import { mySignOut, auth } from '../Firebase/FirebaseConfig'
+import { auth } from '../Firebase/FirebaseConfig'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import MainApp from "./MainApp";
 
