@@ -35,8 +35,7 @@ export function createAnAccount(email, password, rePassword) {
     createUserWithEmailAndPassword(auth, email, password).then((res) => {
         user = res.user;
     }).catch((err) => {
-        console.log('Error Code: ', err.code);
-        console.log('Error Msg: ', err.message);
+        throw ('Error Code: ', err.code, 'Error Msg: ', err.message);
     })
 
 }
@@ -45,8 +44,7 @@ export function signInWithEmail(email, password) {
     signInWithEmailAndPassword(auth, email, password).then(res => {
         user = res.user;
     }).catch(err => {
-        console.log('Error Code: ', err.code);
-        console.log('Error Msg: ', err.message);
+        throw ('Error Code: ', err.code, 'Error Msg: ', err.message);
     })
 }
 //now With Google
@@ -54,7 +52,7 @@ export function signInWithGoogle() {
     signInWithPopup(auth, new GoogleAuthProvider()).then((res) => {
         console.log(res);
     }).catch(err => {
-        console.log('Code: ', err.code, 'Msg: ', err.message);
+        throw('Code: ', err.code, 'Msg: ', err.message);
     });
 }
 
