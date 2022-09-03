@@ -7,6 +7,16 @@ signOut,
 GoogleAuthProvider,
 signInWithPopup
 } from "firebase/auth";
+import {
+getFirestore,
+collection,
+doc,
+addDoc,
+getDocs,
+setDoc,
+deleteDoc,
+} from "firebase/firestore";
+
 
 
 const firebaseConfig = {
@@ -20,7 +30,9 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 // * Auth Functions
 //Create Account
@@ -57,4 +69,37 @@ export function signInWithGoogle() {
 //Sign Out
 export function mySignOut() {
     signOut(auth);
+}
+
+// * Database Functions
+
+//Access to users
+const usersRef = collection(db, "users");
+
+//Read Users
+export async function getUsers(callback) {
+    const data = await getDocs(usersRef);
+    const users = data.docs.map(doc => {
+        return {...doc.data(), id: doc.id};
+    })
+    callback(users)
+}
+
+//Write Documnet
+export async function setDocUsername(username) {
+    await addDoc(usersRef, {
+        username: username,
+    })
+}
+
+//Update a Document
+export async function updateFirstName(name, id) {
+    const docRef = await doc(db, "users", id)
+    await setDoc(docRef, { firstName: name }, { merge: true })
+}
+
+//Delete Document
+export async function deleteUser(id) {
+    const docRef = await doc(db, "users", id)
+    await deleteDoc(docRef)
 }
