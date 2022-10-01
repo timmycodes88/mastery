@@ -1,28 +1,27 @@
 import tw from 'twin.macro';
-import { mySignOut, getUsers, setDocUsername, updateFirstName, deleteUser } from "../Firebase/FirebaseConfig";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './Routes/Home';
-import GlobalChat from './Routes/GlobalChat';
+import { mySignOut, setUserData, getUserData, auth } from "../Firebase/FirebaseConfig";
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect, useState } from 'react';
 
 export default function MainApp() {
 
-    const [users, setUsers] = useState([]);
-    const [username, setUsername] = useState("");
-    const [newName, setNewName] = useState("");
+    const [userAuth, loading, error] = useAuthState(auth);
+
+
+    const [edit, setEdit] = useState(false);
+
+    const [user, setUser] = useState({})
+
+    const [name, setName] = useState('')
+    const [username, setUsername] = useState('')
 
     useEffect(() => {
-        getUsers(setUsers);
-    })
+        getUserData(setUser, userAuth.uid)
+    }, [edit])
 
-    function createNewUser() {
-        setDocUsername(username);
-        setUsername('')
-    }
-
-    function changeFirstName(id) {
-        updateFirstName(newName, id)
-        setNewName("");
+    function saveButton() {
+        setUserData(userAuth.uid, name, username);
+        setEdit(false)
     }
 
     return(
@@ -31,19 +30,21 @@ export default function MainApp() {
                 <SignOut onClick={mySignOut}>Signed Out</SignOut>
             </Header>
             <PageBase>
-                {users.map(user => {
-                    return (
+                <ProfileWrap>
+                    {edit ? 
                         <>
-                            <h2>{user.firstName} {user.lastName}</h2>
-                            <input className='border border-blue-500' value={newName} onChange={(e) => setNewName(e.target.value)}></input>
-                            <button onClick={() => changeFirstName(user.id)} >Change First Name</button>
-                            <button className='text-4xl' onClick={() => deleteUser(user.id)} >X</button>
+                        <Input placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}></Input>
+                        <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}></Input>
+                        <EditButton onClick={saveButton}>Save</EditButton>
                         </>
-                    )
-                })}
-                <input className='border border-blue-500' value={username} onChange={(e) => setUsername(e.target.value)}></input>
-                <button onClick={createNewUser} >Set Username</button>
-                
+                        :
+                        <>
+                        <h1>{user.name ? user.name : "*****"}</h1>
+                        <h2>{user.username ? user.username : "*****"}</h2>
+                        <EditButton onClick={() => setEdit(val => !val)}>Edit Profile</EditButton>
+                        </>
+                    }
+                </ProfileWrap>
             </PageBase>
         </>
     )
@@ -52,3 +53,7 @@ export default function MainApp() {
 const Header = tw.div`w-full sticky bg-green-500`;
 const SignOut = tw.button`p-4 m-2 rounded-md text-white bg-red-600`;
 const PageBase = tw.div`p-4` // ! TEMP STYLES
+
+const ProfileWrap = tw.div`p-4 my-4 m-auto bg-gray-300 text-gray-900 text-center border border-gray-500`
+const Input = tw.input`block my-4 mx-auto`
+const EditButton = tw.button`bg-white px-2 py-1 rounded-2xl m-auto`

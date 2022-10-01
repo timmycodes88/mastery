@@ -12,6 +12,7 @@ getFirestore,
 collection,
 doc,
 addDoc,
+getDoc,
 getDocs,
 setDoc,
 deleteDoc,
@@ -43,6 +44,7 @@ export function createAnAccount(email, password, rePassword) {
     } 
 
     createUserWithEmailAndPassword(auth, email, password).then((res) => {
+        console.log(res.user)
     }).catch((err) => {
         console.log('Error Code: ', err.code);
         console.log('Error Msg: ', err.message);
@@ -58,12 +60,12 @@ export function signInWithEmail(email, password) {
     })
 }
 //now With Google
-export function signInWithGoogle() {
-    signInWithPopup(auth, new GoogleAuthProvider()).then((res) => {
-        console.log(res);
-    }).catch(err => {
-        console.log('Code: ', err.code, 'Msg: ', err.message);
-    });
+export async function signInWithGoogle() {
+    const result = await signInWithPopup(auth, new GoogleAuthProvider())
+    const docSnapshot = await getDoc(doc(db, "users", result.user.uid))
+    if (!docSnapshot.exists()) {
+        await setDoc(doc(db, "users", result.user.uid), {id: result.user.uid})
+    }
 }
 
 //Sign Out
@@ -72,9 +74,29 @@ export function mySignOut() {
 }
 
 // * Database Functions
-
 //Access to users
 const usersRef = collection(db, "users");
+
+//Get User Data
+export async function getUserData(callback, id) {
+    const docRef = doc(db, "users", id)
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    callback(docSnap.data())
+}
+
+export async function setUserData(uid, name, username) {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, {
+        name: name,
+        username: username,
+    }, { merge: true })
+}
 
 //Read Users
 export async function getUsers(callback) {
@@ -86,11 +108,6 @@ export async function getUsers(callback) {
 }
 
 //Write Documnet
-export async function setDocUsername(username) {
-    await addDoc(usersRef, {
-        username: username,
-    })
-}
 
 //Update a Document
 export async function updateFirstName(name, id) {
